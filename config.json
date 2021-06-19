@@ -1,0 +1,4 @@
+{
+"prefix": "maxuga",
+"token": process.env.BOT_API_KEY
+}
