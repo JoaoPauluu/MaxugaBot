@@ -1,5 +1,7 @@
 const Discord = require("discord.js");
-const { prefix, token } = require("./config.json");
+const prefix = "maxuga";
+const token = process.env.BOT_TOKEN;
+
 
 const client = new Discord.Client();
 const songs = require('./songs.json');
