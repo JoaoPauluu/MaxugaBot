@@ -26,6 +26,8 @@ client.once("disconnect", () => {
   console.log("Disconnect!");
 });
 
+//Checks when a user joins/leaves/moves from a voice channel and runs the code
+
 client.on('voiceStateUpdate', async (oldMember, newMember) => {
   if (oldMember.member.user.bot) return;
   let newUserChannel = newMember.channelID;
@@ -59,31 +61,40 @@ client.on('voiceStateUpdate', async (oldMember, newMember) => {
   }
 })
 
+//All chat commands
+
 client.on("message", async message => {
   if (message.author.bot) return;
   if (!message.content.startsWith(prefix)) return;
   if (message.content.startsWith(`${prefix} pog`)) {
     message.channel.send('gay')
-  } else if (message.content.startsWith(`${prefix} ednaldo pereira`)) {
-    message.channel.send('https://cdn.discordapp.com/attachments/813517617679564832/852185287151845376/EalBoKOWoAUqOQ8.png')
-  } else if (message.content.startsWith(`${prefix} meme`)) {
+  } else
+   if (message.content.startsWith(`${prefix} ednaldo pereira`)) {
+    message.channel.send('https://i.imgur.com/Lajk9AM.png')
+  } else
+   if (message.content.startsWith(`${prefix} meme`)) {
     const connection = await message.member.voice.channel.join();
     const dispacher = connection.play(pickRandomMusic());
-  } else if (message.content.startsWith(`${prefix} maxuga`)) {
-    message.channel.send('https://cdn.discordapp.com/attachments/813517737250127942/852187214937980928/maxuga.png')
-  } else if (message.content.startsWith(`${prefix} on`)) {
+  } else
+   if (message.content.startsWith(`${prefix} maxuga`)) {
+    message.channel.send('https://i.imgur.com/iAsK7Gb.png')
+  } else
+   if (message.content.startsWith(`${prefix} on`)) {
     await message.guild.me.setNickname('Maxuga [ON]');
     message.channel.send('Agora estou seguindo os outros nas chamadas');
     joinCall = true
-  } else if (message.content.startsWith(`${prefix} off`)) {
+  } else
+   if (message.content.startsWith(`${prefix} off`)) {
     await message.guild.me.setNickname('Maxuga [OFF]');
     message.channel.send('Agora não estou mais seguindo os outros nas chamadas');
     joinCall = false
-  } else if (message.content.startsWith(`${prefix} sussy balls`)) {
+  } else
+   if (message.content.startsWith(`${prefix} sussy balls`)) {
     const connection = await message.member.voice.channel.join();
     const dispacher = connection.play(songs[7]);
-    console.log(songs[7]);
   }
 })
+
+
 
 client.login(token);
