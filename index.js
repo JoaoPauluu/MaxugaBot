@@ -1,12 +1,33 @@
 const Discord = require("discord.js");
+const songs = require('./songs.json');
+const client = new Discord.Client();
+const disbut = require('discord-buttons')(client);
 const prefix = "maxuga";
 const token = process.env.BOT_TOKEN;
 
+let joinCall = true;
 
-const client = new Discord.Client();
-const disbut = require('discord-buttons')(client);
-const songs = require('./songs.json');
-let joinCall = true
+const botCommands = {
+  maxuga: (message) => {
+    message.channel.send('https://i.imgur.com/iAsK7Gb.png')},
+  "ednaldo pereira": (message) =>{message.channel.send('https://i.imgur.com/Lajk9AM.png')},
+  pog: (message) => {message.channel.send('Pog')},
+  help: (message) => {message.channel.send(embedFunction())},
+  meme: async (message) => {
+    const connection = await message.member.voice.channel.join();
+    const dispacher = connection.play(pickRandomMusic())},
+  "sussy balls": async (message) => {
+    const connection = await message.member.voice.channel.join();
+    const dispacher = connection.play(songs[7])},
+  on: async (message) => {
+    await message.guild.me.setNickname('Maxuga [ON]');
+    message.channel.send('Agora estou seguindo os outros nas chamadas');
+    joinCall = true},
+  off: async (message) => {
+    await message.guild.me.setNickname('Maxuga [OFF]');
+    message.channel.send('Agora não estou mais seguindo os outros nas chamadas');
+    joinCall = false}
+};
 
 
 
@@ -48,6 +69,8 @@ client.once("ready", () => {
       type: 'PLAYING'
     }
   })
+  let clientGuilds = client.guilds;
+  console.log(clientGuilds);
 });
 
 client.once("reconnecting", () => {
@@ -57,6 +80,18 @@ client.once("reconnecting", () => {
 client.once("disconnect", () => {
   console.log("Disconnect!");
 });
+
+//All chat commands
+
+client.on("message", async message => {
+  if (message.author.bot) return;
+  if (!message.content.startsWith(prefix)) return;
+  const messageShort = message.content.substring(prefix.length).trim();
+ // console.log(messageShort); //debugging only, remove later
+  if (botCommands[messageShort]) {
+    botCommands[messageShort](message);
+  } else message.channel.send('Infelizmente esse comando não existe :(');
+})
 
 //Checks when a user joins/leaves/moves from a voice channel and runs the code
 
@@ -92,44 +127,6 @@ client.on('voiceStateUpdate', async (oldMember, newMember) => {
       })
   }
 })
-
-//All chat commands
-
-client.on("message", async message => {
-  if (message.author.bot) return;
-  if (!message.content.startsWith(prefix)) return;
-  if (message.content.startsWith(`${prefix} pog`)) {
-    message.channel.send('gay')
-  } else
-   if (message.content.startsWith(`${prefix} ednaldo pereira`)) {
-    message.channel.send('https://i.imgur.com/Lajk9AM.png')
-  } else
-   if (message.content.startsWith(`${prefix} meme`)) {
-    const connection = await message.member.voice.channel.join();
-    const dispacher = connection.play(pickRandomMusic());
-  } else
-   if (message.content.startsWith(`${prefix} maxuga`)) {
-    message.channel.send('https://i.imgur.com/iAsK7Gb.png')
-  } else
-   if (message.content.startsWith(`${prefix} on`)) {
-    await message.guild.me.setNickname('Maxuga [ON]');
-    message.channel.send('Agora estou seguindo os outros nas chamadas');
-    joinCall = true
-  } else
-   if (message.content.startsWith(`${prefix} off`)) {
-    await message.guild.me.setNickname('Maxuga [OFF]');
-    message.channel.send('Agora não estou mais seguindo os outros nas chamadas');
-    joinCall = false
-  } else
-   if (message.content.startsWith(`${prefix} sussy balls`)) {
-    const connection = await message.member.voice.channel.join();
-    const dispacher = connection.play(songs[7]);
-  } else
-   if (message.content.startsWith(`${prefix} help`)) {
-     message.channel.send(embedFunction());
-   }
-})
-
 
 
 client.login(token);
