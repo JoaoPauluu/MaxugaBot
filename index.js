@@ -1,37 +1,39 @@
+//Require 'File System' and 'Discord.js'
+const fs = require('fs');
 const Discord = require("discord.js");
+
+//Require the array from 'songs.json'
 const songs = require('./songs.json');
+
+//Creates a new Discord.client
 const client = new Discord.Client();
+
+//Require 'discord-buttons'
 const disbut = require('discord-buttons')(client);
+
+//Create a new commands map inside the client object
+client.commands = new Discord.Collection();
+
+//Save all files ending with '.js' inside /commands inside an array
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+//Creates a new object inside client.commands map for each item in the commandFiles array
+for (const file of commandFiles) {
+  const command = require(`./commands/${file}`);
+  client.commands.set(command.name, command);
+}
+
+console.log(client.commands.get('help').execute.toString());
+
+//Defines the default prefix and token for the bot
 const prefix = "maxuga";
 const token = process.env.BOT_TOKEN;
 
+//Variable that can be switched to define if the bot is gonna follow users or not SOON TO BE DEPRECATED
 let joinCall = true;
 
-const botCommands = {
-  maxuga: (message) => {
-    message.channel.send('https://i.imgur.com/iAsK7Gb.png')},
-  "ednaldo pereira": (message) =>{message.channel.send('https://i.imgur.com/Lajk9AM.png')},
-  pog: (message) => {message.channel.send('Pog')},
-  help: (message) => {message.channel.send(embedFunction())},
-  meme: async (message) => {
-    const connection = await message.member.voice.channel.join();
-    const dispacher = connection.play(pickRandomMusic())},
-  "sussy balls": async (message) => {
-    const connection = await message.member.voice.channel.join();
-    const dispacher = connection.play(songs[7])},
-  on: async (message) => {
-    await message.guild.me.setNickname('Maxuga [ON]');
-    message.channel.send('Agora estou seguindo os outros nas chamadas');
-    joinCall = true},
-  off: async (message) => {
-    await message.guild.me.setNickname('Maxuga [OFF]');
-    message.channel.send('Agora não estou mais seguindo os outros nas chamadas');
-    joinCall = false}
-};
 
-
-
-const embedFunction = () => {
+//Function that generates an embed for a help message and returns it SHOULD BE AUTOMATIZED FOR EACH NEW COMMMAND
+function helpEmbed() {
   const helpEmbed = new Discord.MessageEmbed()
     .setColor('#0099ff')
     .setTitle('Maxuga Commands')
@@ -52,15 +54,17 @@ const embedFunction = () => {
 }
 
 
-
+//Function that picks a random item inside songs array
 function pickRandomMusic(min = 0, max = 8) {
   min = Math.ceil(min);
   max = Math.floor(max);
   randomPick = Math.floor(Math.random() * (max - min)) + min;
   return songs[randomPick];
-}
+};
+
 
 client.once("ready", () => {
+  //Code that will run when the bot starts
   console.log("Ready!");
   client.user.setPresence({
     status: 'online',
@@ -69,28 +73,44 @@ client.once("ready", () => {
       type: 'PLAYING'
     }
   })
-  let clientGuilds = client.guilds;
-  console.log(clientGuilds);
+  //let clientGuilds = client.guilds;
+  //console.log(clientGuilds);
 });
 
 client.once("reconnecting", () => {
+  //Code that will run if the bot is reconnecting
   console.log("Reconnecting!");
 });
 
 client.once("disconnect", () => {
+  //Code that will run if the bot got disconnected
   console.log("Disconnect!");
 });
 
 //All chat commands
 
 client.on("message", async message => {
-  if (message.author.bot) return;
-  if (!message.content.startsWith(prefix)) return;
-  const messageShort = message.content.substring(prefix.length).trim();
- // console.log(messageShort); //debugging only, remove later
-  if (botCommands[messageShort]) {
-    botCommands[messageShort](message);
-  } else message.channel.send('Infelizmente esse comando não existe :(');
+  if (!message.content.startsWith(prefix) || message.author.bot) return;
+  //args has all the words (separated by space) typed by the user inside an array except for the prefix
+  const args = message.content.slice(prefix.length).trim().split(/ +/);
+  //comman has only the first word typed by the user after the prefix
+  const command = args.shift().toLowerCase();
+
+  if (!client.commands.has(command)) {
+    message.channel.send('Esse comando não existe :(');
+    return;
+  }
+
+  //  Tries to run the command requested by the user. If it detects an error the error
+  //  Will be logged to the console and send in my dm and in the channel that the command was typed
+  try {
+    client.commands.get(command).execute(message, args);
+  } catch (error) {
+    console.log(error);
+    client.users.cache.get('758328146377834549').send(error.stack);
+    message.channel.send(error.stack);
+  }
+
 })
 
 //Checks when a user joins/leaves/moves from a voice channel and runs the code
