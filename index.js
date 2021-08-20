@@ -1,6 +1,7 @@
 const fs = require('fs');
 const Discord = require("discord.js");
-const funcs = require('./scripts/functions.js')
+const funcs = require('./scripts/functions.js');
+const callevents = require('./scripts/callevents.js');
 
 //Creates a new Discord.client
 const client = new Discord.Client();
@@ -80,38 +81,8 @@ client.on("message", async message => {
 })
 
 //Checks when a user joins/leaves/moves from a voice channel and runs the code
-
 client.on('voiceStateUpdate', async (oldMember, newMember) => {
-  if (oldMember.member.user.bot) return;
-  let newUserChannel = newMember.channelID;
-  let oldUserChannel = oldMember.channelID;
-
-  if(oldUserChannel === null && joinCall === true) {
-    //user joins a channel
-
-    console.log('User joined the channel', newUserChannel);
-    //bot join the channel
-    const theChannel = client.channels.cache.get(newUserChannel);
-    theChannel.join().then(connection => {
-        const dispacher = connection.play(funcs.pickRandomMusic());
-      })
-  } else if(newUserChannel === null && joinCall === true){
-    //user leaves a channel
-
-    console.log('User left the channel', oldUserChannel);
-    //bot leaves the channel
-    const theChannel = client.channels.cache.get(oldUserChannel);
-    theChannel.leave();
-  } else if (newUserChannel !== oldUserChannel && joinCall === true) {
-    //user moves channels
-    console.log('User moved channels', oldUserChannel, newUserChannel);
-
-    //bot move channels
-    const theChannel = client.channels.cache.get(newUserChannel);
-    theChannel.join().then(connection => {
-        const dispacher = connection.play(funcs.pickRandomMusic());
-      })
-  }
+  callevents.follower(oldMember, newMember, client);
 })
 
 
