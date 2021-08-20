@@ -1,9 +1,8 @@
-//Require 'File System' and 'Discord.js'
 const fs = require('fs');
 const Discord = require("discord.js");
-
+const funcs = require('./scripts/functions.js')
 //Require the array from 'songs.json'
-const songs = require('./songs.json');
+// const songs = require('./songs.json');
 
 //Creates a new Discord.client
 const client = new Discord.Client();
@@ -29,38 +28,38 @@ const prefix = "maxuga";
 const token = process.env.BOT_TOKEN;
 
 //Variable that can be switched to define if the bot is gonna follow users or not SOON TO BE DEPRECATED
-let joinCall = true;
+letjoinCall = true;
 
 
 //Function that generates an embed for a help message and returns it SHOULD BE AUTOMATIZED FOR EACH NEW COMMMAND
-function helpEmbed() {
-  const helpEmbed = new Discord.MessageEmbed()
-    .setColor('#0099ff')
-    .setTitle('Maxuga Commands')
-    .setDescription("Todos os comandos do bot Maxuga")
-    .setThumbnail('https://i.imgur.com/iAsK7Gb.png')
-    .addFields(
-      { name: 'maxuga maxuga', value: 'Manda uma linda foto do Maxuga' },
-      { name: 'maxuga ednaldo pereira', value: 'Manda uma linda foto do Ednaldo Pereira' },
-      { name: 'maxuga on', value: 'Ativa a feature em que o bot segue as pessoas na call (BETA)' },
-      { name: 'maxuga off', value: 'Desativa a feature em que o bot segue as pessoas na call (BETA)' },
-      { name: 'maxuga meme', value: 'Faz com que o bot entre na call e roda um "meme" aleatório' },
-      { name: 'maxuga sussy balls', value: 'Faz com que o bot entre na call e toque "Sussy balls" por Kanye West' },
-      { name: 'maxuga help', value: 'Mostra esse menu' },
-    )
-    .setImage('https://i.imgur.com/iAsK7Gb.png')
-    .setFooter('Ajuda / reportar bugs entre em contato com JoaoPauluu#6969');
-   return helpEmbed;
-}
+// function helpEmbed() {
+//   const embedHelp = new Discord.MessageEmbed()
+//     .setColor('#0099ff')
+//     .setTitle('Maxuga Commands')
+//     .setDescription("Todos os comandos do bot Maxuga")
+//     .setThumbnail('https://i.imgur.com/iAsK7Gb.png')
+//     .addFields(
+//       { name: 'maxuga maxuga', value: 'Manda uma linda foto do Maxuga' },
+//       { name: 'maxuga ednaldo pereira', value: 'Manda uma linda foto do Ednaldo Pereira' },
+//       { name: 'maxuga on', value: 'Ativa a feature em que o bot segue as pessoas na call (BETA)' },
+//       { name: 'maxuga off', value: 'Desativa a feature em que o bot segue as pessoas na call (BETA)' },
+//       { name: 'maxuga meme', value: 'Faz com que o bot entre na call e roda um "meme" aleatório' },
+//       { name: 'maxuga sussy balls', value: 'Faz com que o bot entre na call e toque "Sussy balls" por Kanye West' },
+//       { name: 'maxuga help', value: 'Mostra esse menu' },
+//     )
+//     .setImage('https://i.imgur.com/iAsK7Gb.png')
+//     .setFooter('Ajuda / reportar bugs entre em contato com JoaoPauluu#6969');
+//    return embedHelp;
+// }
 
 
 //Function that picks a random item inside songs array
-function pickRandomMusic(min = 0, max = 8) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  randomPick = Math.floor(Math.random() * (max - min)) + min;
-  return songs[randomPick];
-};
+// function pickRandomMusic(min = 0, max = 8) {
+//   min = Math.ceil(min);
+//   max = Math.floor(max);
+//   randomPick = Math.floor(Math.random() * (max - min)) + min;
+//   return songs[randomPick];
+// };
 
 
 client.once("ready", () => {
@@ -127,7 +126,7 @@ client.on('voiceStateUpdate', async (oldMember, newMember) => {
     //bot join the channel
     const theChannel = client.channels.cache.get(newUserChannel);
     theChannel.join().then(connection => {
-        const dispacher = connection.play(pickRandomMusic());
+        const dispacher = connection.play(funcs.pickRandomMusic());
       })
   } else if(newUserChannel === null && joinCall === true){
     //user leaves a channel
@@ -143,7 +142,7 @@ client.on('voiceStateUpdate', async (oldMember, newMember) => {
     //bot move channels
     const theChannel = client.channels.cache.get(newUserChannel);
     theChannel.join().then(connection => {
-        const dispacher = connection.play(pickRandomMusic());
+        const dispacher = connection.play(funcs.pickRandomMusic());
       })
   }
 })

@@ -1,9 +1,9 @@
-//const helpEmbed = require('../embeds/help.js');
+const funcs = require('../scripts/functions.js')
 
 module.exports = {
 	name: 'help',
 	description: 'Send a help message',
 	execute(message, args) {
-        message.channel.send(helpEmbed());
+        message.channel.send(funcs.helpEmbed());
 	},
 };
