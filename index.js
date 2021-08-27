@@ -1,58 +1,45 @@
+//Defines the default prefix and token for the bot
+const prefix = "maxuga";
+const token = process.env.BOT_TOKEN;
+const uri = process.env.URI;
+
+//Require needed modules
 const fs = require('fs');
 const Discord = require("discord.js");
 const funcs = require('./scripts/functions.js');
-const callevents = require('./scripts/callevents.js');
+const callevents = require('./scripts/callEvents.js');
+const { MongoClient } = require('mongodb');
+const dbClient = new MongoClient(uri);
 
-//Creates a new Discord.client
+//Creates client
 const client = new Discord.Client();
 
-//Require 'discord-buttons'
+//Create disbut for discord-buttons
 const disbut = require('discord-buttons')(client);
 
-//Create a new commands map inside the client object
+
+
+//Create a map and put each command inside commands folder
 client.commands = new Discord.Collection();
 
-//Save all files ending with '.js' inside /commands inside an array
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-//Creates a new object inside client.commands map for each item in the commandFiles array
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
   client.commands.set(command.name, command);
 }
 
-console.log(client.commands.get('help').execute.toString());
 
-//Defines the default prefix and token for the bot
-const prefix = "maxuga";
-const token = process.env.BOT_TOKEN;
 
 //Variable that can be switched to define if the bot is gonna follow users or not SOON TO BE DEPRECATED
 letjoinCall = true;
 
+//Actions when the bot connects, disconnectes, and reconnects
+const start = require('./scripts/start.js');
 
-client.once("ready", () => {
-  //Code that will run when the bot starts
-  console.log("Ready!");
-  client.user.setPresence({
-    status: 'online',
-    activity: {
-      name: 'maxuga help',
-      type: 'PLAYING'
-    }
-  })
-  //let clientGuilds = client.guilds;
-  //console.log(clientGuilds);
-});
+client.once("ready", () => {start.ready(client)});
+client.once("reconnecting", () => {start.reconnecting()});
+client.once("disconnect", () => {start.disconnect()});
 
-client.once("reconnecting", () => {
-  //Code that will run if the bot is reconnecting
-  console.log("Reconnecting!");
-});
-
-client.once("disconnect", () => {
-  //Code that will run if the bot got disconnected
-  console.log("Disconnect!");
-});
 
 //All chat commands
 
