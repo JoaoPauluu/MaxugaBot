@@ -8,14 +8,16 @@ const fs = require('fs');
 const Discord = require("discord.js");
 const funcs = require('./scripts/functions.js');
 const callevents = require('./scripts/callEvents.js');
-const { MongoClient } = require('mongodb');
-const dbClient = new MongoClient(uri);
 
 //Creates client
 const client = new Discord.Client();
 
 //Create disbut for discord-buttons
 const disbut = require('discord-buttons')(client);
+
+//Connects to database
+const mongoUtil = require('./scripts/mongoUtil.js');
+mongoUtil.connect();
 
 
 
