@@ -1,4 +1,5 @@
 const mongoUtil = require('../scripts/mongoUtil.js');
+const embeds = require('../scripts/embed.js');
 
 
 module.exports = {
@@ -11,7 +12,7 @@ module.exports = {
 		if(!searchResult) {
 			await collection.insertOne({ id: `${message.guild.id}`, chase: false});
 			message.guild.me.setNickname('Maxuga [OFF]');
-			message.channel.send('Agora NÃO ESTOU seguindo os outros nas chamadas');
+			message.channel.send(embeds.simpleEmbed(`<@${message.author.id}> Agora NÃO ESTOU seguindo os outros nas chamadas`));
 		} else
 		if(searchResult.chase == true) {
 			await collection.updateOne(query, {
@@ -20,29 +21,14 @@ module.exports = {
 				}
 			})
 			message.guild.me.setNickname('Maxuga [OFF]');
-			message.channel.send('Agora NÃO ESTOU seguindo os outros nas chamadas');
+			message.channel.send(embeds.simpleEmbed(`<@${message.author.id}> Agora NÃO ESTOU seguindo os outros nas chamadas`));
 		} else
 		if(searchResult.chase == false) {
-			message.channel.send('Já estou desabilitado');
+			message.channel.send(embeds.simpleEmbed(`<@${message.author.id}> Já estou desabilitado`));
 		} else {
-			message.channel.send('Algo deu errado');
 			console.log(searchResult);
+			message.channel.send(`<@${message.author.id}> Algo deu errado`);
 		}
 	}
 };
 
-
-
-
-
-/*
-module.exports = {
-	name: 'off',
-	description: 'Disable the feature that makes the bot follow users in voice channels',
-	execute(message, args) {
-		message.guild.me.setNickname('Maxuga [OFF]');
-        message.channel.send('Agora não estou mais seguindo os outros nas chamadas');
-        joinCall = false;
-	},
-};
-*/

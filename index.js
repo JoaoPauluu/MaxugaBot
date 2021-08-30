@@ -8,6 +8,7 @@ const fs = require('fs');
 const Discord = require("discord.js");
 const funcs = require('./scripts/functions.js');
 const callevents = require('./scripts/callEvents.js');
+const embeds = require('./scripts/embed.js');
 
 //Creates client
 const client = new Discord.Client();
@@ -53,7 +54,7 @@ client.on("message", async message => {
   const command = args.shift().toLowerCase();
 
   if (!client.commands.has(command)) {
-    message.channel.send('Esse comando não existe :(');
+    message.channel.send(embeds.simpleEmbed(`<@${message.author.id}> Esse comando não existe, digite **maxuga help** para uma lista com todos os comandos`));
     return;
   }
 
