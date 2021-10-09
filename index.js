@@ -1,17 +1,18 @@
-//Defines the default prefix and token for the bot
+//Defines the default prefix, token and database connection for the bot
 const prefix = "maxuga";
 const token = process.env.BOT_TOKEN;
 const uri = process.env.URI;
 
 //Require needed modules
 const fs = require('fs');
-const Discord = require("discord.js");
+const { Client, Intents} = require("discord.js");
 const funcs = require('./scripts/functions.js');
 const callevents = require('./scripts/callEvents.js');
 const embeds = require('./scripts/embed.js');
 
+
 //Creates client
-const client = new Discord.Client();
+const client = new Client({ intents: [Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES]});
 
 //Create disbut for discord-buttons
 const disbut = require('discord-buttons')(client);
@@ -46,8 +47,9 @@ client.once("disconnect", () => {start.disconnect()});
 
 //All chat commands
 
-client.on("message", async message => {
+client.on("messageCreate", async message => {
   if (!message.content.startsWith(prefix) || message.author.bot) return;
+
   //args has all the words (separated by space) typed by the user inside an array except for the prefix
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   //comman has only the first word typed by the user after the prefix
@@ -59,7 +61,7 @@ client.on("message", async message => {
   }
 
   //  Tries to run the command requested by the user. If it detects an error the error
-  //  Will be logged to the console and send in my dm and in the channel that the command was typed
+  //  Will be logged to the console and sent in my dm and in the channel that the command was typed
   try {
     client.commands.get(command).execute(message, args);
   } catch (error) {
