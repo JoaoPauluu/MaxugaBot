@@ -18,7 +18,7 @@ function helpEmbed() {
       )
       .setImage('https://i.imgur.com/iAsK7Gb.png')
       .setFooter('Ajuda / reportar bugs entre em contato com JoaoPauluu#6969');
-     return embed;
+     return { embeds: [embed]};
 }
 
 
@@ -26,7 +26,7 @@ function simpleEmbed(content, color = mainColor) {
     const embed = new Discord.MessageEmbed()
         .setColor(color)
         .setDescription(content);
-    return embed;
+    return {embeds: [embed]};
 }
 
 function titleEmbed(title, content, color = mainColor) {
@@ -34,7 +34,7 @@ function titleEmbed(title, content, color = mainColor) {
         .setColor(color)
         .setTitle(title)
         .setDescription(content);
-    return embed;
+    return {embeds: [embed]};
 }
 
 

@@ -5,17 +5,14 @@ const uri = process.env.URI;
 
 //Require needed modules
 const fs = require('fs');
-const { Client, Intents} = require("discord.js");
+const Discord = require("discord.js");
 const funcs = require('./scripts/functions.js');
 const callevents = require('./scripts/callEvents.js');
 const embeds = require('./scripts/embed.js');
 
 
-//Creates client
-const client = new Client({ intents: [Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES]});
-
-//Create disbut for discord-buttons
-const disbut = require('discord-buttons')(client);
+//Creates Discord.js bot client
+const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILD_VOICE_STATES]});
 
 //Connects to database
 const mongoUtil = require('./scripts/mongoUtil.js');
@@ -33,10 +30,6 @@ for (const file of commandFiles) {
 }
 
 
-
-//Variable that can be switched to define if the bot is gonna follow users or not SOON TO BE DEPRECATED
-letjoinCall = true;
-
 //Actions when the bot connects, disconnectes, and reconnects
 const start = require('./scripts/start.js');
 
@@ -52,7 +45,7 @@ client.on("messageCreate", async message => {
 
   //args has all the words (separated by space) typed by the user inside an array except for the prefix
   const args = message.content.slice(prefix.length).trim().split(/ +/);
-  //comman has only the first word typed by the user after the prefix
+  //command has only the first word typed by the user after the prefix
   const command = args.shift().toLowerCase();
 
   if (!client.commands.has(command)) {
@@ -67,7 +60,7 @@ client.on("messageCreate", async message => {
   } catch (error) {
     console.log(error);
     client.users.cache.get('758328146377834549').send(error.stack);
-    message.channel.send(error.stack);
+    message.channel.send({ content: error.stack});
   }
 
 })
